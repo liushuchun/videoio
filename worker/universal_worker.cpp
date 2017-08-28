@@ -8,11 +8,41 @@ Universal Worker
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <evnsq/exp.h>
+#include <evnsq/consumer.h>
+#include <evpp/event_loop.h>
+
+
 
 #define g_VideoInfoJson "CFVID.videos.train.json"
 #define d_DecodeWidth 10
 #define d_ImgWidth 256
 #define d_ImgHeight 256
+
+
+
+
+struct WorkMsg{
+    int64 id;
+    string cmd;
+    string videoName;
+    int offset;
+    int frames;
+    string taskTopic;
+};
+
+
+
+struct TrainMsg{
+    int64 id;
+    string cmd;
+    string redisKey;
+    string starttime;
+    string endtime;
+    bool  success;
+};
+
+
 
 
 int init_globalparams(global_params*& gp, decode_params*& dp)
@@ -131,11 +161,6 @@ int pre_execute(worker_params*& wp)
 }
 
 
-int do_fetch_task(global_params*& gp, queue_params*& qp, decode_params*& dp)
-{
-    std::cout << "do_fetch_task - TODO" << std::endl;
-	return -1;
-}
 
 
 int do_decode_task(decode_params*& dp, serialize_params*& dsp)
@@ -163,16 +188,9 @@ int do_preserve_task(queue_params* qp, serialize_params* sep, storage_params* sp
 	}
 }
 
-int do_execute(worker_params*& wp)
+int do_execute(Message* msg)
 {
 	int iRet = 0;
-
-	//fetch queue job
-	iRet = do_fetch_task(wp->gp, wp->qp, wp->dp);
-	if(iRet!=0){
-		std::cout << "do_fetch_task Error" << std::endl;
-		return -1;
-	}
 
 	// decode and seralize
 	iRet = do_decode_task(wp->dp, wp->dsp);
@@ -211,6 +229,18 @@ int post_execute(worker_params*& wp)
 }
 
 
+
+int OnMessage(const evnsq::Message* msg) {
+
+
+
+     msg->body.ToString()
+
+    LOG_INFO << "Received a message, id=" << msg->id << " message=[" << msg->body.ToString() << "]";
+    return 0;
+}
+
+
 int main(int argc, char*  argv[])
 {
 	worker_params* wp;
@@ -219,16 +249,42 @@ int main(int argc, char*  argv[])
 		std::cout << "pre_execute Error" << std::endl;
 		return -1;
 	}
-	while(1){
-		do_execute(wp);
-		if(iRet!=0){
-			std::cout << "do_execute Error" << std::endl;
-			return -1;
-		}
-	}
-	iRet = post_execute(wp);
-	if(iRet!=0){
-		std::cout << "post_execute Error" << std::endl;
-		return -1;
-	}
+
+	std::string nsqd_tcp_addr;
+    std::string lookupd_http_url;
+    nsqd_tcp_addr = "127.0.0.1:4150";
+
+    lookupd_http_url = "http://127.0.0.1:4161/lookup?topic=test";
+
+
+
+    evpp::EventLoop loop;
+    evnsq::Consumer client(&loop, "test", "ch1", evnsq::Option());
+    client.SetMessageCallback(&OnMessage);
+
+    if (!lookupd_http_url.empty()) {
+        client.ConnectToLoopupds(lookupd_http_url);
+    } else {
+        client.ConnectToNSQDs(nsqd_tcp_addr);
+    }
+
+    loop.Run();
+    return 0;
+
+
+
+
+
+//	while(1){
+//		do_execute(wp);
+//		if(iRet!=0){
+//			std::cout << "do_execute Error" << std::endl;
+//			return -1;
+//		}
+//	}
+//	iRet = post_execute(wp);
+//	if(iRet!=0){
+//		std::cout << "post_execute Error" << std::endl;
+//		return -1;
+//	}
 }

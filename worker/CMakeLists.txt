@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(essp)
+project(worker)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -155,4 +155,4 @@ set(SOURCE_FILES
         universal_worker.cpp
         universal_worker.h)
 
-add_executable(essp ${SOURCE_FILES})
+add_executable(worker ${SOURCE_FILES})
