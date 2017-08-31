@@ -158,6 +158,7 @@ int  CalOptFlow(serialize_params*  decode_memory, serialize_params*&  extract_ou
 	extract_output->width = decode_memory->width;
 	extract_output->height = decode_memory->height;
 	extract_output->channels = 2;
+
 	
 	do
 	{

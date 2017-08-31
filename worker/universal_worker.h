@@ -23,8 +23,8 @@ struct global_params{
 };
 struct decode_params{
 	std::string video_file;
+	int msgId;
 	int cls_idx;
-	float f_video_in_class_idx;
 	float f_video_offset;
 	int i_video_in_class_idx;
 	int i_DecWidth;
@@ -63,5 +63,8 @@ struct worker_params
 	serialize_params* esp;	// extract serializer
 	storage_params* sp;
 };
+
+
+
 
 #endif
