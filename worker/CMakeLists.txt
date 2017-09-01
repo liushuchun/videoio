@@ -3,6 +3,11 @@ project(worker)
 
 set(CMAKE_CXX_STANDARD 11)
 
+
+add_subdirectory(evpp)
+add_subdirectory(evnsq)
+
+
 set(SOURCE_FILES
         decode/decode_frames.cpp
         decode/decode_frames.h
@@ -154,5 +159,8 @@ set(SOURCE_FILES
         redis_test.cpp
         universal_worker.cpp
         universal_worker.h)
+
+add_subdirectory(evpp)
+add_subdirectory(evnsq)
 
 add_executable(worker ${SOURCE_FILES})

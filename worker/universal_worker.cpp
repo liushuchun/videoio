@@ -10,11 +10,9 @@ Universal Worker
 #include <string>
 #include <fstream>
 #include "time.h"
-#include <evnsq/exp.h>
-#include <evnsq/consumer.h>
-#include <evpp/event_loop.h>
+#include "evnsq/consumer.h"
+#include "evpp/event_loop.h"
 #include <json_func.h>
-#include "ifstream"
 #include "rapidjson/include/rapidjson/filereadstream.h"
 
 #define g_VideoInfoJson "CFVID.videos.train.json"
