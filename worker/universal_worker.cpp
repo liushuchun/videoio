@@ -32,11 +32,11 @@ evnsq::Producer pubCli;
 
 struct WorkMsg{
     int64 id;
-    string cmd;
-    string videoName;
+    std::string cmd;
+    std::string videoName;
     int offset;
     int frames;
-    string taskTopic;
+    std::string taskTopic;
 };
 
 
@@ -47,11 +47,11 @@ struct TrainMsg{
     }
 
     int64 id;
-    string cmd;
-    string isflow;
-    string redisKey;
-    string starttime;
-    string endtime;
+    std::string cmd;
+    std::string isflow;
+    std::string redisKey;
+    std::string starttime;
+    std::string endtime;
     bool  success;
 };
 
