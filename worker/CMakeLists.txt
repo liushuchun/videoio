@@ -4,8 +4,7 @@ project(worker)
 set(CMAKE_CXX_STANDARD 11)
 
 
-add_subdirectory(evpp)
-add_subdirectory(evnsq)
+
 
 
 set(SOURCE_FILES
@@ -160,7 +159,7 @@ set(SOURCE_FILES
         universal_worker.cpp
         universal_worker.h)
 
-add_subdirectory(evpp)
-add_subdirectory(evnsq)
+add_subdirectory(nsq/evpp)
+add_subdirectory(nsq/evnsq)
 
 add_executable(worker ${SOURCE_FILES})

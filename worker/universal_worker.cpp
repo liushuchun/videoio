@@ -262,7 +262,7 @@ int post_execute(worker_params*& wp)
 }
 
 
-rapidjson::Value getVideoInfo(string name)
+rapidjson::Value getVideoInfo(std::string name)
 {
     rapidjson::Value& videoList=gp->video_info["videos"];
     for(rapidjson::SizeType i=0;i<videoList.Size();i++)

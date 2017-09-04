@@ -11,7 +11,7 @@ message(STATUS "evpp_SRCS : " ${evpp_SRCS})
 
 set (MACOSX_RPATH ${LIBRARY_OUTPUT_PATH})
 
-include_directories(${PROJECT_SOURCE_DIR})
+include_directories(../..)
 
 add_library(evpp_static STATIC ${evpp_SRCS})
 target_link_libraries(evpp_static ${DEPENDENT_LIBRARIES})

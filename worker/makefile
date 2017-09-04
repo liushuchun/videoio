@@ -1,5 +1,5 @@
 OBJS=universal_worker.o redis_helper.o json_func.o decode_frames.o extract_flows.o
-INCLUDES=-I ./decode/ffmpeg-3.3.2/include 
+INCLUDES=-I ./decode/ffmpeg-3.3.2/include -I /Users/macbook/pyproject/videoio/worker -I /Users/macbook/pyproject/videoio/worker/nsq
 CXXFLAGS=-D__STDC_CONSTANT_MACROS `pkg-config --cflags opencv`
 LDFLAGS=-L ./decode/ffmpeg-3.3.2/lib  -L ./hiredis-vip -lhiredis_vip -lavformat -lavcodec -lavutil -lrt -lswscale -lswresample -lpthread -lm -lz -ldl
 LIBS=`pkg-config --libs opencv`
