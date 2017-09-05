@@ -263,13 +263,15 @@ int post_execute(worker_params*& wp)
 }
 
 
-rapidjson::Value getVideoInfo(std::string name)
+void getVideoInfo(std::string name,rapidjson::Value& val)
 {
     rapidjson::Value& videoList=gp->video_info["videos"];
     for(rapidjson::SizeType i=0;i<videoList.Size();i++)
     {
         if (videoList[i]["name"].GetString()==name){
-                    return videoList[i];
+
+                    val=videoList[i];
+                    return;
             }
     }
 
@@ -285,7 +287,7 @@ int OnMessage(const evnsq::Message* msg) {
 
     rapidjson::Document jsonMsg;
 
-    jsonMsg.Parse(msg->body.ToString());
+    jsonMsg.Parse(msg->body.ToString().c_str());
     WorkMsg workMsg=WorkMsg{};
     workMsg.id=jsonMsg["id"].GetInt64();
     workMsg.cmd=jsonMsg["cmd"].GetString();
@@ -300,7 +302,8 @@ int OnMessage(const evnsq::Message* msg) {
     wp->dp->video_file=root+"/"+workMsg.videoName;
     wp->dp->f_video_offset=float(workMsg.offset);
     wp->dp->i_video_in_class_idx=workMsg.id;
-    rapidjson::Value val=getVideoInfo(workMsg.videoName);
+    rapidjson::Value val;
+    getVideoInfo(workMsg.videoName,val);
     wp->qp->cur_key=""+std::to_string(wp->dp->cls_idx)+std::to_string(workMsg.id);
 
 
