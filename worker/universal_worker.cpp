@@ -27,8 +27,8 @@ Universal Worker
 worker_params* wp;
 global_params* gp;
 
-evnsq::Producer client;
-evnsq::Producer pubCli;
+static evnsq::Producer client;
+static evnsq::Producer pubCli;
 
 
 struct WorkMsg{
@@ -217,7 +217,7 @@ int do_preserve_task(queue_params* qp, serialize_params* sep, storage_params* sp
     msg="{'key':"+qp->cur_key+"}";
 
 
-    if (!pubCli->Publish(trainTopic,msg)){
+    if (!pubCli.Publish(trainTopic,msg)){
         std::cout<<"error!"<<std::endl;
     }
 
@@ -284,6 +284,7 @@ rapidjson::Value getVideoInfo(std::string name)
 int OnMessage(const evnsq::Message* msg) {
 
     rapidjson::Document jsonMsg;
+
     jsonMsg.Parse(msg->body.ToString());
     WorkMsg workMsg=WorkMsg{};
     workMsg.id=jsonMsg["id"].GetInt64();
@@ -292,7 +293,7 @@ int OnMessage(const evnsq::Message* msg) {
     workMsg.taskTopic=jsonMsg["task_topic"].GetString();
     workMsg.videoName=jsonMsg["video_name"].GetString();
 
-    std::cout<<msg->body.ToString()<<endl;
+    std::cout<<msg->body.ToString()<<std::endl;
 
 
     std::string root=gp->video_info["root"].GetString();

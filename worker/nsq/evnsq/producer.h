@@ -15,6 +15,7 @@ public:
     typedef std::function<void(Producer*, size_t)> HighWaterMarkCallback;
 
     Producer(evpp::EventLoop* loop, const Option& ops);
+    Producer();
     ~Producer();
 
     // Thread safe
