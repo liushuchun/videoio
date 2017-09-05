@@ -6,6 +6,7 @@ Universal Worker
 #include "decode/extract_flows.h"
 #include "universal_worker.h"
 #include "rapidjson/include/rapidjson/document.h"
+#include "rapidjson/include/rapidjson/filereadstream.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -13,8 +14,8 @@ Universal Worker
 #include "evnsq/consumer.h"
 #include "evpp/event_loop.h"
 #include <json_func.h>
-#include "rapidjson/include/rapidjson/filereadstream.h"
-
+#include <evnsq/consumer.h>
+#include <evnsq/producer.h>
 #define g_VideoInfoJson "CFVID.videos.train.json"
 #define d_DecodeWidth 10
 #define d_ImgWidth 256
@@ -268,7 +269,7 @@ rapidjson::Value getVideoInfo(std::string name)
     for(rapidjson::SizeType i=0;i<videoList.Size();i++)
     {
         if (videoList[i]["name"].GetString()==name){
-                    return videoList["i"];
+                    return videoList[i];
             }
     }
 
@@ -291,7 +292,7 @@ int OnMessage(const evnsq::Message* msg) {
     workMsg.taskTopic=jsonMsg["task_topic"].GetString();
     workMsg.videoName=jsonMsg["video_name"].GetString();
 
-    std::cout<<msg->body.ToString();
+    std::cout<<msg->body.ToString()<<endl;
 
 
     std::string root=gp->video_info["root"].GetString();
