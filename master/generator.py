@@ -3,10 +3,9 @@ import logging
 import os
 import sqlite3
 from configparser import ConfigParser
-
-import pub as pb
-
-from master import util
+import pub
+import nsq
+import util
 
 logging.basicConfig(level=logging.INFO)
 
@@ -44,7 +43,7 @@ class Gen():
     def load_video_info(self):
         """ load video info list file"""
 
-        INFO_PATH = "/Users/macbook/pyproject/videoio/master/funclib/info.json"
+        INFO_PATH = "/Users/macbook/pyproject/videoio/master/tools/info.json"
         with open(INFO_PATH) as f:
             self.video_info = json.load(f)
 
@@ -137,7 +136,7 @@ def main():
     flow = parser.get("task", "flow")
     task_name = parser.get("task", "task_name")
 
-    pub = pb.Publisher(nsqd_addr=nsqd_addr, port=nsq_port, topic=topic)
+    writer = pub.Publisher(nsqd_addr=nsqd_addr, port=nsq_port, topic=topic)
 
     conn = sqlite3.connect('video.db')
     cursor = conn.cursor()
@@ -158,8 +157,8 @@ def main():
                    "task_topic": task_name}
             print(msg)
             msgs.append(str(msg))
-
-        pub.put_msgs(msgs[10])
+        print(msgs)
+        writer.put_msgs(msgs)
 
     print("total input:", index)
 
