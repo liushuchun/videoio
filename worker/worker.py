@@ -6,7 +6,7 @@ import json
 import ConfigParser
 import sqlite3
 import os
-
+import work
 import multiprocessing
 
 
@@ -25,8 +25,20 @@ class Collector(multiprocessing.Process):
             msg=self.msg_queue.get()
             if msg is None:
                 break
+            print(msg)
+            ID = msg["id"]
+            label = msg["label"]
+            idx = msg["idx"]
+            cmd = msg["cmd"]
+            video_name = msg["video_name"]
+            offset = msg["offset"]
+            frames = msg["frames"]
+            task_topic = msg["task_topic"]
+            file_path = msg["file_path"]
 
+            work.do_execute(ID,label,idx,cmd,video_name,float(offset),frames,file_path,task_topic)
 
+            #TODO:
         return
 
 
@@ -59,9 +71,9 @@ class Worker:
             conn = sqlite3.connect("")
             cursor = conn.cursor()
             row = cursor.execute("select * from label_info where label=" + label).fetchone()
-            sum = row[1]
+            total_num = row[1]
             cursor.close()
-            return sum
+            return total_num
 
 
         except Exception as  e:
@@ -77,7 +89,7 @@ class Worker:
         print(body)
         data = json.loads(body)
 
-        id = data["id"]
+        ID = data["id"]
         label = data["label"]
         idx = data["idx"]
         cmd = data["cmd"]
@@ -116,4 +128,6 @@ if __name__ == "__main__":
     results = multiprocessing.Queue()
 
     worker = Worker(results)
+    collector = Collector(results)
+    collector.start()
     worker.run()
